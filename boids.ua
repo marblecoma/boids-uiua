@@ -7,7 +7,7 @@ BoidSize ← 5
 NumBoids      ← 500
 Vel           ← 75
 VelLimit      ← × 2 Vel
-Perception    ← ⁿ₂ 40
+Perception    ← 40
 CohesionStr   ← 0.25
 SeparationStr ← 0.4
 AlignmentStr  ← 0.3
@@ -70,18 +70,14 @@ Reset ← (
 )
 
 Reset
-⊸I~Draw~Centered~Square White BoidSize
 
 I~Loop!(
   I~Draw~Background Black
   I~Draw~Text White 50 ℂ 10 -50 Height "Ctrl-r to Restart"
   ⍥⋅⋅Reset /× I~Key~Down {I~Key~LeftControl @R}
-  I~Mouse~Down‼I~Mouse~Left Chase
-  ≤Perception +∩ⁿ₂°ℂ ⊸˙⊞- # Put perception matrix above positions and velocities on the stack
-  ⟜₂Separation
-  ⟜₂Alignment
-  ⟜₂Cohesion
-  ◌ # Pop perception matrix
+  I~Mouse!Down‼Left Chase
+  ≤Perception ⌵ ⊸˙⊞-                  # Put perception matrix above positions and velocities on the stack
+  ◌ ⟜₂(Cohesion|Alignment|Separation) # Apply rules and then pop perception matrix
   ⊸Update
   ⊸I~Draw~Centered~Square White BoidSize
 )
