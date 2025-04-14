@@ -1,0 +1,84 @@
+# Experimental!
+I ~ "git: github.com/Marcos-cat/iris"
+Width    ← 1600
+Height   ← 900
+BoidSize ← 5
+
+NumBoids      ← 500
+Vel           ← 75
+VelLimit      ← × 2 Vel
+Perception    ← ⁿ₂ 40
+CohesionStr   ← 0.3
+SeparationStr ← 0.35
+AlignmentStr  ← 0.3
+ChaseStr      ← 0.01
+
+BoidsPos ← ℂ ∩(⌊×)Width⟜Height ∩∵⋅⚂ .⇡ NumBoids
+BoidsVel ← ×Vel ±ℂ ∩(-₁⌊×3∵⋅⚂) .⇡ NumBoids
+
+# Outputs new velocities steering towards the average position of boids within Perception radius
+# ? PercMat Pos Vel
+Cohesion ← (
+  ⊸×           # fill each col with positions of boids within Perception radius
+  ÷∩/+±⊸⌵      # calc average position of boids within Perception radius per boid
+  ±-           # calc normalized vectors pointing at avg position per boid
+  ×CohesionStr # scale vectors
+  -            # subtract cohesion vectors from current velocities
+)
+
+# Outputs new velocities steering away from boids within Perception radius
+# ? PercMat Pos Vel
+Separation ← (
+  ⊙˙⊞-           # calc square distances and position differences between all boids
+  ×              # zero out position differences where square distance is greater than perception
+  ±/+            # calc normalized separation vectors per boid
+  ×SeparationStr # scale vectors
+  +              # add steering vectors to current velocities
+)
+
+# Outputs new velocities steering towards avg velocity of boids within Perception radius
+# ? PercMat Pos Vel
+Alignment ← (
+  𝄐⊸×           # zero out velocity differences where square distance is greater than perception
+  ÷+ε∩/+±⊸⌵     # calc average velocity of boids within Perception radius per boid
+  ⊸-            # difference between current vel and avg vel per boid
+  ×AlignmentStr # scale differences
+  -             # subtract differences from current velocities
+)
+
+# Outputs positions and new velocities steering towards target
+# ? Target Pos Vel
+Chase ← (
+  ⤙-             # steering vectors from current positions to target pos
+  ⊙(- ×ChaseStr) # subtract scaled steering vectors from current velocities
+)
+
+# Handles wrapping boids around screen edges
+# ? Pos
+Wrap ← ⍜°ℂ(∩◿Width⟜Height)
+
+# Outputs new positions by adding current velocities and handling screen wrap
+# ? Pos Vel
+Update ← (
+  ⊙(×I~Dt⍜⌵(↥ Vel ↧ VelLimit)) # cap velocities between Vel and VelLimit and mul by delta time
+  +                            # update positions
+  Wrap                         # handle screen wrap
+)
+
+I~Open ℂ Width Height "Boids"
+# °I~Screen~FPS 1
+
+BoidsPos BoidsVel
+⊸I~Draw~Centered~Square White BoidSize
+
+I~Loop!(
+  I~Draw~Background Black
+  I~Mouse~Down‼I~Mouse~Left Chase
+  ≤Perception +∩ⁿ₂°ℂ ⊸˙⊞- # Put perception matrix above positions and velocities on the stack
+  ⟜₂Cohesion
+  ⟜₂Separation
+  ⟜₂Alignment
+  ◌ # Pop perception matrix
+  ⊸Update
+  ⊸I~Draw~Centered~Square White BoidSize
+)
