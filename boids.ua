@@ -8,13 +8,13 @@ NumBoids      ← 500
 Vel           ← 75
 VelLimit      ← × 2 Vel
 Perception    ← 40
-CohesionStr   ← 0.25
 SeparationStr ← 0.4
 AlignmentStr  ← 0.3
+CohesionStr   ← 0.25
 ChaseStr      ← 0.01
 
 # Outputs new velocities steering away from boids within Perception radius
-# ? PercMat Pos Vel
+# Vel ? PercMat Pos Vel
 Separation ← (
   ⊙˙⊞-           # calc square distances and position differences between all boids
   ×              # zero out position differences where square distance is greater than perception
@@ -24,7 +24,7 @@ Separation ← (
 )
 
 # Outputs new velocities steering towards avg velocity of boids within Perception radius
-# ? PercMat Pos Vel
+# Vel ? PercMat Pos Vel
 Alignment ← (
   𝄐⊸×           # zero out velocity differences where square distance is greater than perception
   ÷+ε∩/+±⊸⌵     # calc average velocity of boids within Perception radius per boid
@@ -34,7 +34,7 @@ Alignment ← (
 )
 
 # Outputs new velocities steering towards the average position of boids within Perception radius
-# ? PercMat Pos Vel
+# Vel ? PercMat Pos Vel
 Cohesion ← (
   ⊸×           # fill each col with positions of boids within Perception radius
   ÷∩/+±⊸⌵      # calc average position of boids within Perception radius per boid
@@ -44,18 +44,18 @@ Cohesion ← (
 )
 
 # Outputs positions and new velocities steering towards target
-# ? Target Pos Vel
+# Pos Vel ? Target Pos Vel
 Chase ← (
   ⤙-             # steering vectors from current positions to target pos
   ⊙(- ×ChaseStr) # subtract scaled steering vectors from current velocities
 )
 
 # Handles wrapping boids around screen edges
-# ? Pos
+# Pos ? Pos
 Wrap ← ⍜°ℂ(∩◿Width⟜Height)
 
 # Outputs new positions by adding current velocities and handling screen wrap
-# ? Pos Vel
+# Pos ? Pos Vel
 Update ← (
   ⊙(×I~Dt⍜⌵(↥ Vel ↧ VelLimit)) # cap velocities between Vel and VelLimit and mul by delta time
   +                            # update positions
@@ -63,10 +63,12 @@ Update ← (
 )
 
 I~Open ℂ Width Height "Boids"
-# °I~Screen~FPS 1
+
+# Generates random Pos and 2D Vel per boid
+# Pos Vel ?
 Reset ← (
-  ×Vel ±ℂ ∩(-₁⌊×3∵⋅⚂) .⇡ NumBoids
-  ℂ ∩(⌊×)Width⟜Height ∩∵⋅⚂ .⇡ NumBoids
+  ×Vel ℂ °∠×τ ∵⋅⚂ ⊚ NumBoids
+  ⌊ℂ ∩× Width⟜Height ∩∵⋅⚂ .⊚ NumBoids
 )
 
 Reset
