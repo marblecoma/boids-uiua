@@ -8,5 +8,5 @@ Holding down the left mouse button will cause the boids to chase the mouse posit
 ## TODO
 
 - Quadtree
-- Allow program to be reset via keyboard command
-- Sliders to dynamically control strength of each force
+- <s>Allow program to be reset via keyboard command</s>
+- Allow dynamic control of strength of each force

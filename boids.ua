@@ -8,23 +8,10 @@ NumBoids      ← 500
 Vel           ← 75
 VelLimit      ← × 2 Vel
 Perception    ← ⁿ₂ 40
-CohesionStr   ← 0.3
-SeparationStr ← 0.35
+CohesionStr   ← 0.25
+SeparationStr ← 0.4
 AlignmentStr  ← 0.3
 ChaseStr      ← 0.01
-
-BoidsPos ← ℂ ∩(⌊×)Width⟜Height ∩∵⋅⚂ .⇡ NumBoids
-BoidsVel ← ×Vel ±ℂ ∩(-₁⌊×3∵⋅⚂) .⇡ NumBoids
-
-# Outputs new velocities steering towards the average position of boids within Perception radius
-# ? PercMat Pos Vel
-Cohesion ← (
-  ⊸×           # fill each col with positions of boids within Perception radius
-  ÷∩/+±⊸⌵      # calc average position of boids within Perception radius per boid
-  ±-           # calc normalized vectors pointing at avg position per boid
-  ×CohesionStr # scale vectors
-  -            # subtract cohesion vectors from current velocities
-)
 
 # Outputs new velocities steering away from boids within Perception radius
 # ? PercMat Pos Vel
@@ -44,6 +31,16 @@ Alignment ← (
   ⊸-            # difference between current vel and avg vel per boid
   ×AlignmentStr # scale differences
   -             # subtract differences from current velocities
+)
+
+# Outputs new velocities steering towards the average position of boids within Perception radius
+# ? PercMat Pos Vel
+Cohesion ← (
+  ⊸×           # fill each col with positions of boids within Perception radius
+  ÷∩/+±⊸⌵      # calc average position of boids within Perception radius per boid
+  ±-           # calc normalized vectors pointing at avg position per boid
+  ×CohesionStr # scale vectors
+  -            # subtract cohesion vectors from current velocities
 )
 
 # Outputs positions and new velocities steering towards target
@@ -67,17 +64,23 @@ Update ← (
 
 I~Open ℂ Width Height "Boids"
 # °I~Screen~FPS 1
+Reset ← (
+  ×Vel ±ℂ ∩(-₁⌊×3∵⋅⚂) .⇡ NumBoids
+  ℂ ∩(⌊×)Width⟜Height ∩∵⋅⚂ .⇡ NumBoids
+)
 
-BoidsPos BoidsVel
+Reset
 ⊸I~Draw~Centered~Square White BoidSize
 
 I~Loop!(
   I~Draw~Background Black
+  I~Draw~Text White 50 ℂ 10 -50 Height "Ctrl-r to Restart"
+  ⍥⋅⋅Reset /× I~Key~Down {I~Key~LeftControl @R}
   I~Mouse~Down‼I~Mouse~Left Chase
   ≤Perception +∩ⁿ₂°ℂ ⊸˙⊞- # Put perception matrix above positions and velocities on the stack
-  ⟜₂Cohesion
   ⟜₂Separation
   ⟜₂Alignment
+  ⟜₂Cohesion
   ◌ # Pop perception matrix
   ⊸Update
   ⊸I~Draw~Centered~Square White BoidSize
