@@ -5,5 +5,6 @@ This is a basic implementation of Craig Reynolds [Boids](https://en.wikipedia.or
 
 ## TODO
 
-- Allow program to be reset via keyboard command?
-- Sliders to dynamically control strength of each force?
+- Quadtree
+- Allow program to be reset via keyboard command
+- Sliders to dynamically control strength of each force
