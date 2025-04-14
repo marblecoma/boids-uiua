@@ -16,8 +16,8 @@ ChaseStr      ← 0.01
 # Outputs new velocities steering away from boids within Perception radius
 # Vel ? PercMat Pos Vel
 Separation ← (
-  ⊙˙⊞-           # calc square distances and position differences between all boids
-  ×              # zero out position differences where square distance is greater than perception
+  ⊙˙⊞-           # calc position differences between all boids
+  ×              # zero out position differences where distance is greater than perception
   ±/+            # calc normalized separation vectors per boid
   ×SeparationStr # scale vectors
   +              # add steering vectors to current velocities
@@ -26,8 +26,8 @@ Separation ← (
 # Outputs new velocities steering towards avg velocity of boids within Perception radius
 # Vel ? PercMat Pos Vel
 Alignment ← (
-  𝄐⊸×           # zero out velocity differences where square distance is greater than perception
-  ÷+ε∩/+±⊸⌵     # calc average velocity of boids within Perception radius per boid
+  𝄐⊸×           # zero out velocity differences where distance is greater than perception
+  ÷∩/+±⊸⌵       # calc average velocity of boids within Perception radius per boid
   ⊸-            # difference between current vel and avg vel per boid
   ×AlignmentStr # scale differences
   -             # subtract differences from current velocities
