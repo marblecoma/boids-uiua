@@ -78,14 +78,7 @@ Reset
 I~Loop!(
   I~Draw~Background Black
   I~Draw~Text White 50 ℂ 10 -50 Height "Ctrl-r to Restart"
-  ⬚0⊢⊚ ⊂₀ I~Key~Pressed {@w @s @d @a @e @q}
-  ⨬(
-  | ⊙⊙⍜⊡₀(+0.1)
-  | ⊙⊙⍜⊡₀(-0.1)
-  | ⊙⊙⍜⊡₁(+0.1)
-  | ⊙⊙⍜⊡₁(-0.1)
-  | ⊙⊙⍜⊡₂(+0.1)
-  | ⊙⊙⍜⊡₂(-0.1))
+  ⊃⋅⊙∘(+⊙⋅⋅∘) ×0.1 ≡/- I~Key~Pressed ["sw" "ad" "qe"]
   I~Draw~Text White 25 ℂ 10 -150 Height ⊂"Separation (W/S): " °⋕⁅₁⊡₀⤙⊙⊙∘
   I~Draw~Text White 25 ℂ 10 -120 Height ⊂"Alignment (A/D): " °⋕⁅₁⊡₁⤙⊙⊙∘
   I~Draw~Text White 25 ℂ 10 -90 Height ⊂"Cohesion (Q/E): " °⋕⁅₁⊡₂⤙⊙⊙∘
