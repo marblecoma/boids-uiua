@@ -26,7 +26,7 @@ Separation ← (
 # Outputs new velocities steering towards avg velocity of boids within Perception radius
 # Vel Strs ? PercMat Pos Vel Strs
 Alignment ← (
-  𝄐⊸×      # zero out velocity differences where distance is greater than perception
+  𝄐⊸×      # zero out velocities where distance is greater than perception
   ÷∩/+±⊸⌵  # calc average velocity of boids within Perception radius per boid
   ⊸-       # difference between current vel and avg vel per boid
   × ⊡₁⤙⊙⊙∘ # scale differences
